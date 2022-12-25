@@ -19,7 +19,7 @@ const tokens = {
     refreshToken: "my_refresh_token"
 };
 
-const clientId = 39939938383;
+const clientId = 'I9938b';
 
 app.post('/api/register', (req, res) => {
     if(req.body) {
@@ -43,35 +43,36 @@ app.post('/api/register', (req, res) => {
 });
 
 
+const genericError = 'Missing request body parameters!';
 app.post('/api/login', (req, res) => {
     if(req.body){
         const { email, password } = req.body;
         if((!email || email.trim()) === '' && !password || password.trim() === '') {
-            return res.send({
-                error: 'Requested body is not complete!'
+            return res.status(406).send({
+                error: genericError
             })
         } else {
             if(password.length < 8) {
-                res.send({
+                res.status(406).send({
                     error: 'Incorrect Password!'
                 })
             }
             // in case of special character 
             if(typeof password === 'string' && password.includes('$')) {
-                res.send({
+                res.status(406).send({
                     error: 'Special characters are not allowed!'
                 })
             }
             if(req.body.token && req.body.token === tokens.token) {
-                res.send({
+                res.status(200).send({
                     ...tokens,
                     email,
                     clientId,
                 });
             } else {
-                res.send({
-                    error: 'Incorrect token!'
-                })
+                res.status(406).send({
+                    'error': 'invalid or missing token'
+                });
             }
         }
     }
